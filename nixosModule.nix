@@ -3,64 +3,57 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
-  scriptName = "cuttlefi.sh";
-  cfg = config.services.${scriptName};
+}: let
+  cfg = config.services.cuttlefish;
 in {
-  options.services.${scriptName} = {
-    enable = mkEnableOption "podcast downloader script";
+  options.services.cuttlefish = {
+    enable = lib.mkEnableOption "Cuttlefish service";
 
-    syncInterval = mkOption {
-      type = types.str;
-      default = "30m";
-      description = "How often to run sync";
+    package = lib.mkOption {
+      type = lib.types.str;
+      description = "Cuttlefi.sh package";
     };
 
-    configPath = mkOption {
-      type = types.str;
-      # default = "/etc/${scriptName}/config.yaml";
-      description = "Path to the YAML configuration file containing podcast subscriptions.";
+    settings = lib.mkOption {
+      type = lib.types.attrs;
+      default = {};
+      description = "Cuttlefish configuration settings.";
     };
 
-    saveDir = mkOption {
-      type = types.str;
-      # default = "/var/lib/${scriptName}/episodes";
-      description = "Directory to save the podcast episodes.";
-    };
-
-    logsDir = mkOption {
-      type = types.str;
-      # default = "/var/log/${scriptName}";
-      description = "Directory to save download logs.";
+    interval = lib.mkOption {
+      type = lib.types.str;
+      default = "hourly";
+      description = "Interval for the Cuttlefish service to run.";
     };
   };
 
-  config = mkIf cfg.enable {
-    environment.systemPackages = with pkgs; [
-      xmlstarlet
-      yq
-      wget
-      coreutils # for md5sum and other basic tools
-    ];
+  config = lib.mkIf cfg.enable {
+    environment.systemPackages = [pkgs.cuttlefish];
 
-    systemd.services.${scriptName} = {
-      description = "Podcast Downloader Service";
+    systemd.services.cuttlefish = {
+      description = "Cuttlefish Podcast Downloader";
       wantedBy = ["multi-user.target"];
-      path = with pkgs; [xmlstarlet yq wget coreutils];
-      serviceConfig = {
-        ExecStart = pkgs."cuttlefi.sh";
-        User = "nobody";
-        Group = "nogroup";
-      };
-      unitConfig.Documentation = "man:podcast-downloader(8)";
-      startInterval = cfg.${scriptName}.syncInterval;
-    };
+      path = [pkgs.cuttlefish];
 
-    # Ensure the directories exist and set the appropriate permissions
-    systemd.tmpfiles.rules = [
-      "d ${cfg.saveDir} 0755 nobody nogroup - -"
-      "d ${cfg.logsDir} 0755 nobody nogroup - -"
-    ];
+      serviceConfig = {
+        ExecStart = let
+          jsonConfig = builtins.toJSON cfg.settings;
+          jsonConfigFile = pkgs.writeText "config.yml" jsonConfig;
+        in "${pkgs.cuttlefish}/bin/cuttlefish --config <(${pkgs.yq}/bin/yq eval -P '${jsonConfigFile}/config.yml') sync";
+        Restart = "on-failure";
+      };
+
+      script = let
+        configFile = pkgs.writeText "cuttlefish-config.yml" yamlConfig;
+      in ''
+      '';
+
+      timers.cuttlefish = {
+        description = "Cuttlefish Sync Timer";
+        partOf = ["cuttlefish.service"];
+        wantedBy = ["timers.target"];
+        timerConfig.OnCalendar = cfg.interval;
+      };
+    };
   };
 }
