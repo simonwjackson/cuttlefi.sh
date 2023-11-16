@@ -22,7 +22,7 @@
         defaultPackage = cuttlefish;
 
         nixosModules."cuttlefi.sh" = import ./nixosModule.nix;
-        nixosModules.default = self.nixosModules."cuttlefi.sh";
+        # nixosModules.default = self.nixosModules."cuttlefi.sh";
       }
     );
 }
