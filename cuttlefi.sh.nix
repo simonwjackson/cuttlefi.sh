@@ -1,6 +1,6 @@
 {pkgs, ...}:
 pkgs.resholve.mkDerivation rec {
-  pname = "podcast-cli-app.sh";
+  pname = "cuttlefi.sh";
   version = "0.1.0";
 
   src = ./src;
@@ -10,7 +10,7 @@ pkgs.resholve.mkDerivation rec {
 
   installPhase = ''
     mkdir -p $out/share/man/man1
-    ${pkgs.pandoc}/bin/pandoc -s -t man ./podcast_downloader.md -o $out/share/man/man1/podcast_downloader.1
+    ${pkgs.pandoc}/bin/pandoc -s -t man ./cuttlefi.sh.1.md -o $out/share/man/man1/cuttlefish.1
 
     find ./bin -type f -exec install -vDm 755 {} $out/{} \;
     chmod +x $out/bin/*
@@ -18,7 +18,7 @@ pkgs.resholve.mkDerivation rec {
 
   solutions = {
     default = {
-      scripts = ["bin/podcast-cli-app.sh"];
+      scripts = ["bin/cuttlefi.sh"];
       interpreter = "${pkgs.bash}/bin/bash";
       inputs = with pkgs; [
         xmlstarlet

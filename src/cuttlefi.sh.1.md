@@ -1,12 +1,12 @@
-# PODCAST_DOWNLOADER(1) User Manuals
+# CUTTLEFI.SH(1) User Manuals
 ## NAME
-`podcast_downloader` - script to download podcast episodes based on a YAML configuration file
+`cuttlefi.sh` - script to download podcast episodes based on a YAML configuration file
 
 ## SYNOPSIS
-**podcast_downloader** [command] [options]
+**cuttlefi.sh** [command] [options]
 
 ## DESCRIPTION
-`podcast_downloader` is a shell script designed to download podcast episodes automatically. It uses a YAML configuration file to read podcast subscriptions and saves downloaded episodes and logs in specified directories. The script requires xmlstarlet, yq, wget, and md5sum to be installed on the system.
+`cuttlefi.sh` is a shell script designed to download podcast episodes automatically. It uses a YAML configuration file to read podcast subscriptions and saves downloaded episodes and logs in specified directories. The script requires xmlstarlet, yq, wget, and md5sum to be installed on the system.
 
 ## COMMANDS
 ### sync
@@ -32,15 +32,15 @@ Synchronize podcasts based on the configuration file. This command triggers the 
 ## EXAMPLES
 To synchronize podcasts with default log level:
 
-    podcast_downloader sync
+    cuttlefi.sh sync
 
 To synchronize podcasts with a specific log level:
 
-    podcast_downloader sync --log-level warn
+    cuttlefi.sh sync --log-level warn
 
 To display help information:
 
-    podcast_downloader --help
+    cuttlefi.sh --help
 
 ## AUTHOR
 Written by [Your Name].

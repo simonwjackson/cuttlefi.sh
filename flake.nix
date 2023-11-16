@@ -1,5 +1,5 @@
 {
-  description = "A Nix flake for the podcast-cli-app";
+  description = "A Nix flake for the cuttlefish";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05"; # Adjust the channel as needed
@@ -15,13 +15,13 @@
     flake-utils.lib.eachDefaultSystem (
       system: let
         pkgs = nixpkgs.legacyPackages.${system};
-        podcast-cli-app = import ./podcast-cli-app.nix {inherit pkgs;};
+        cuttlefish = import ./cuttlefi.sh.nix {inherit pkgs;};
       in {
-        packages.podcast-cli-app = podcast-cli-app;
+        packages."cuttlefi.sh" = cuttlefish;
 
-        defaultPackage = self.packages.${system}.podcast-cli-app;
+        defaultPackage = self.packages.${system}."cuttlefi.sh";
 
-        nixosModules.podcast-cli-app = import ./nixosModule.nix {
+        nixosModules.cuttlefish = import ./nixosModule.nix {
           inherit pkgs;
         };
       }

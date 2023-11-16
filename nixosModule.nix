@@ -5,7 +5,7 @@
   ...
 }:
 with lib; let
-  scriptName = "podcast-cli-app";
+  scriptName = "cuttlefi.sh";
   cfg = config.services.${scriptName};
 in {
   options.services.${scriptName} = {
@@ -49,7 +49,7 @@ in {
       wantedBy = ["multi-user.target"];
       path = with pkgs; [xmlstarlet yq wget coreutils];
       serviceConfig = {
-        ExecStart = pkgs.podcast-cli-app;
+        ExecStart = pkgs."cuttlefi.sh";
         User = "nobody";
         Group = "nogroup";
       };
