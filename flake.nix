@@ -19,7 +19,7 @@
       in {
         packages."cuttlefi.sh" = cuttlefish;
 
-        defaultPackage = self.packages.${system}."cuttlefi.sh";
+        defaultPackage = cuttlefish;
 
         nixosModules.cuttlefish = import ./nixosModule.nix {
           inherit pkgs;
