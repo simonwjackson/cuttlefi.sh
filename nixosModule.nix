@@ -43,11 +43,6 @@ in {
         Restart = "on-failure";
       };
 
-      script = let
-        configFile = pkgs.writeText "cuttlefish-config.yml" yamlConfig;
-      in ''
-      '';
-
       timers.cuttlefish = {
         description = "Cuttlefish Sync Timer";
         partOf = ["cuttlefish.service"];
