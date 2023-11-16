@@ -1,37 +1,39 @@
 #!/usr/bin/env bash
 
+appName=$(basename "${0}")
+
 usage() {
   cat <<EOU
 Usage:
-  $(basename "${0}") sync [options]
-  $(basename "${0}") list [options]
+  $appName sync [options]
+  $appName list [options]
 
 Options:
-  --root-dir DIR     Set the root directory for saving podcast episodes.
-  --logs-dir DIR     Set the directory for saving logs.
-  --log-level LEVEL  Set the logging level (info, warn, error).
+  -c --config FILE      Specify an alternate configuration file.
+  -r --root-dir DIR     Set the root directory for saving podcast episodes.
+  -l --logs-dir DIR     Set the directory for saving logs.
+  -L --log-level LEVEL  Set the logging level (info, warn, error).
   -h --help          Show this screen.
 EOU
 }
 
 eval "$(docopts -A ARGS -h "$(usage)" : "$@")"
 
-# YAML configuration file containing podcast subscriptions
-config_file="/tmp/podcast_config.yaml"
+config_or_empty() {
+  [ -s "${config_file}" ] &&
+    cat "${config_file}" ||
+    echo '---'
+}
 
-# Default values for configurations
-default_root_dir="$(pwd)"
-default_logs_dir="$(pwd)"
-default_log_level="info"
+# Subcommands
+list=${ARGS[list]:-false}
+sync=${ARGS[sync]:-false}
 
-# Read configurations from YAML file
-root_dir="$(yq --raw-output '.root_dir // "'"$default_root_dir"'"' "${config_file}")"
-logs_dir="$(yq --raw-output '.logs_dir // "'"$default_logs_dir"'"' "${config_file}")"
-log_level="$(yq --raw-output '.log_level // "'$default_log_level'"' "${config_file}")"
-
-root_dir=${ARGS[root_dir]:-$root_dir}
-[[ -n "${logs_dir_arg}" ]] && logs_dir="${logs_dir_arg}"
-[[ -n "${log_level_arg}" ]] && log_level="${log_level_arg}"
+# Args
+config_file="${ARGS[--config]:-${HOME}/.config/${appName}/config.yml}"
+root_dir="${ARGS[--root_dir]:-$(config_or_empty | yq --raw-output '.root_dir // "'"$(pwd)"'"')}"
+logs_dir="${ARGS[--logs_dir]:-$(config_or_empty | yq --raw-output '.logs_dir // "'"$(pwd)"'"')}"
+log_level="${ARGS[--log_level]:-$(config_or_empty | yq --raw-output '.log_level // "info"')}"
 
 # Function to download episodes for a given podcast
 download_podcast_episodes() {
@@ -115,15 +117,12 @@ list() {
   done
 }
 
-list=${ARGS[list]:-false}
-sync=${ARGS[sync]:-false}
-
 if [ "$list" = true ]; then
   list
 elif [ "$sync" = true ]; then
   sync
 fi
 
-# for a in "${!ARGS[@]}"; do
-#   echo "$a = ${ARGS[$a]}"
-# done
+for a in "${!ARGS[@]}"; do
+  echo "$a = ${ARGS[$a]}"
+done
