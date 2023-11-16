@@ -21,7 +21,7 @@
 
         defaultPackage = cuttlefish;
 
-        nixosModules.cuttlefish = import ./nixosModule.nix {
+        nixosModules.default = import ./nixosModule.nix {
           inherit pkgs;
         };
       }
