@@ -31,9 +31,9 @@ sync=${ARGS[sync]:-false}
 
 # Args
 config_file="${ARGS[--config]:-${HOME}/.config/${appName}/config.yml}"
-root_dir="${ARGS[--root_dir]:-$(config_or_empty | yq --raw-output '.root_dir // "'"$(pwd)"'"')}"
-logs_dir="${ARGS[--logs_dir]:-$(config_or_empty | yq --raw-output '.logs_dir // "'"$(pwd)"'"')}"
-log_level="${ARGS[--log_level]:-$(config_or_empty | yq --raw-output '.log_level // "info"')}"
+root_dir="${ARGS['--root-dir']:-$(config_or_empty | yq --raw-output '."root-dir" // "'"$(pwd)"'"')}"
+logs_dir="${ARGS['--logs-dir']:-$(config_or_empty | yq --raw-output '."logs-dir" // "'"$(pwd)"'"')}"
+log_level="${ARGS['--log-level']:-$(config_or_empty | yq --raw-output '."log-level" // "info"')}"
 
 download_podcast_episodes() {
   local podcast_name=$1
@@ -84,7 +84,7 @@ sync() {
     download_podcast_episodes "$name" "$url"
   done
 
-  [[ "$log_level" == "info" ]] && echo "All episodes downloaded to $root_dir"
+  [[ "$log_level" == "info" ]] && echo "All episodes downloaded to ${root_dir}"
 }
 
 list() {
@@ -108,6 +108,6 @@ elif [ "$sync" = true ]; then
   sync
 fi
 
-# for a in "${!ARGS[@]}"; do
-#   echo "$a = ${ARGS[$a]}"
-# done
+for a in "${!ARGS[@]}"; do
+  echo "$a = ${ARGS[$a]}"
+done
