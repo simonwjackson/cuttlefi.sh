@@ -66,9 +66,8 @@ download_podcast_episodes() {
       fi
 
       [[ "$log_level" != "error" ]] && echo "Downloading episode: $url"
-      wget -O "${save_dir}/${filename}" "$url"
-
-      echo "$unique_id" >>"$log_file"
+      wget -O "${save_dir}/${filename}" "$url" &&
+        echo "$unique_id" >>"$log_file"
     done
 }
 
