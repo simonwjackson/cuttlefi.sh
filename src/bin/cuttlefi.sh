@@ -76,7 +76,7 @@ sync() {
   mkdir -p "$root_dir"
   mkdir -p "$logs_dir"
 
-  config_or_empty | yq -r -c '.subscriptions // [] | to_entries | map({name: .key} + .value) | .[] | "\(.name)\n\(.url)"' | while
+  config_or_empty | yq --raw-output -c '.subscriptions // [] | to_entries | map({name: .key} + .value) | .[] | "\(.name)\n\(.url)"' | while
     read -r name
     read -r url
   do
