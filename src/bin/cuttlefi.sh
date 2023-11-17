@@ -20,7 +20,7 @@ EOU
 eval "$(docopts -A ARGS -h "$(usage)" : "$@")"
 
 config_or_empty() {
-  [ -s "${config_file}" ] &&
+  [ -f "${config_file}" ] &&
     cat "${config_file}" ||
     echo '---'
 }
@@ -90,8 +90,7 @@ sync() {
   mkdir -p "$root_dir"
   mkdir -p "$logs_dir"
 
-  # Read each subscription from the YAML file and download episodes
-  yq -r -c '.subscriptions | to_entries | map({name: .key} + .value) | .[] | "\(.name)\n\(.url)"' "$config_file" | while
+  config_or_empty | yq -r -c '.subscriptions // [] | to_entries | map({name: .key} + .value) | .[] | "\(.name)\n\(.url)"' | while
     read -r name
     read -r url
   do
@@ -123,6 +122,6 @@ elif [ "$sync" = true ]; then
   sync
 fi
 
-for a in "${!ARGS[@]}"; do
-  echo "$a = ${ARGS[$a]}"
-done
+# for a in "${!ARGS[@]}"; do
+#   echo "$a = ${ARGS[$a]}"
+# done
