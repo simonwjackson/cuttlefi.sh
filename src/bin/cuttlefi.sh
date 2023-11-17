@@ -75,13 +75,20 @@ sync() {
   mkdir -p "$root_dir"
   mkdir -p "$logs_dir"
 
-  config_or_empty | yq --raw-output -c '.subscriptions // [] | to_entries | map({name: .key} + .value) | .[] | "\(.name)\n\(.url)"' | while
-    read -r name
-    read -r url
-  do
-    [[ "$log_level" != "error" ]] && echo "Downloading episodes for $name"
-    download_podcast_episodes "$name" "$url"
-  done
+  select_details='.subscriptions // [] | to_entries | map({name: .key} + .value) | .[] | "\(.name)\n\(.url)"'
+
+  config_or_empty |
+    yq \
+      --raw-output \
+      -c \
+      "${select_details}" |
+    while
+      read -r name
+      read -r url
+    do
+      [[ "$log_level" != "error" ]] && echo "Downloading episodes for $name"
+      download_podcast_episodes "$name" "$url"
+    done
 
   [[ "$log_level" == "info" ]] && echo "All episodes downloaded to ${root_dir}"
 }
