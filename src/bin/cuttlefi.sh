@@ -7,6 +7,7 @@ usage() {
 Usage:
   $appName [options] sync
   $appName [options] list
+  $appName help
 
 Options:
   -c --config FILE      Specify an alternate configuration file.
@@ -25,25 +26,24 @@ config_or_empty() {
     echo '---'
 }
 
-# Subcommands
-list=${ARGS[list]:-false}
-sync=${ARGS[sync]:-false}
-
 # Args
 ARGS['--config']="${ARGS['--config']:-${HOME}/.config/${appName}/config.yml}"
 ARGS['--root-dir']="${ARGS['--root-dir']:-$(config_or_empty | yq --raw-output '."root-dir" // "'"$(pwd)"'"')}"
 ARGS['--logs-dir']="${ARGS['--logs-dir']:-$(config_or_empty | yq --raw-output '."logs-dir" // "'"$(pwd)"'"')}"
 ARGS['--log-level']="${ARGS['--log-level']:-$(config_or_empty | yq --raw-output '."log-level" // "info"')}"
 
+# Subcommands
 source ./commands/list.sh
 source ./commands/sync.sh
 
-if [ "$list" = true ]; then
+if [ "${ARGS[help]}" = true ]; then
+  $(basename "${0}") --help
+elif [ "${ARGS[list]}" = true ]; then
   list "ARGS"
-elif [ "$sync" = true ]; then
+elif [ "${ARGS[sync]}" = true ]; then
   sync "ARGS"
 fi
 
-# for a in "${!ARGS[@]}"; do
-#   echo "$a = ${ARGS[$a]}"
-# done
+for a in "${!ARGS[@]}"; do
+  echo "$a = ${ARGS[$a]}"
+done

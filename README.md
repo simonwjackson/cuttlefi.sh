@@ -1,4 +1,4 @@
-# Cuttlefi.sh
+# cuttlefi.sh
 
 ## Usage as a flake
 
@@ -14,5 +14,4 @@ Add cuttlefi.sh to your `flake.nix`:
     # Use in your outputs
   };
 }
-
 ```
