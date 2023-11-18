@@ -13,14 +13,18 @@ pkgs.resholve.mkDerivation rec {
     ${pkgs.pandoc}/bin/pandoc -s -t man ./cuttlefi.sh.1.md -o $out/share/man/man1/cuttlefish.1
 
     find ./bin -type f -exec install -vDm 755 {} $out/{} \;
-    chmod +x $out/bin/*
+    chmod +x $out/bin/**/*.sh
   '';
 
   solutions = {
     default = {
-      scripts = ["bin/cuttlefi.sh"];
+      scripts = [
+        "bin/*.sh"
+      ];
       interpreter = "${pkgs.bash}/bin/bash";
       inputs = with pkgs; [
+        "${placeholder "out"}/bin"
+
         xmlstarlet
         yq
         wget
@@ -39,12 +43,4 @@ pkgs.resholve.mkDerivation rec {
       ];
     };
   };
-
-  # meta = with pkgs.lib; {
-  #   homepage = "https://github.com/aelsabbahy/goss/blob/v${version}/extras/dgoss/README.md";
-  #   description = "Convenience wrapper around goss that aims to bring the simplicity of goss to docker containers";
-  #   license = licenses.asl20;
-  #   platforms = platforms.linux;
-  #   maintainers = with maintainers; [hyzual];
-  # };
 }
