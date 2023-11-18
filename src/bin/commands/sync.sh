@@ -15,11 +15,14 @@ sync() {
       read -r name
       read -r url
     do
-      [[ "${args['--log-level']}" != "error" ]] && echo "Downloading episodes for $name"
+      [[ "${args['--log-level']}" != "error" ]] &&
+        echo "Downloading episodes for $name"
+
       download "args" "$name" "$url"
     done
 
-  [[ "${args['--log-level']}" == "info" ]] && echo "All episodes downloaded to ${args['--root-dir']}"
+  [[ "${args['--log-level']}" == "info" ]] &&
+    echo "All episodes downloaded to ${args['--root-dir']}"
 }
 
 download() {

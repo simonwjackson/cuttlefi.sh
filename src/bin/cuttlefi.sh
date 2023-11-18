@@ -10,11 +10,11 @@ Usage:
   $appName help
 
 Options:
-  -c --config FILE      Specify an alternate configuration file.
-  -r --root-dir DIR     Set the root directory for saving podcast episodes.
-  -l --logs-dir DIR     Set the directory for saving logs.
-  -L --log-level LEVEL  Set the logging level (info, warn, error).
-  -h --help          Show this screen.
+  -c --config FILE        Specify an alternate configuration file.
+  -r --root-dir DIR       Set the root directory for saving podcast episodes.
+  -l --logs-dir DIR       Set the directory for saving logs.
+  -L --log-level LEVEL    Set the logging level (info, warn, error).
+  -h --help               Show this screen.
 EOU
 }
 
@@ -41,11 +41,12 @@ ARGS['--logs-dir']="${ARGS['--logs-dir']:-$(config_or_empty | yq --raw-output '.
 ARGS['--log-level']="${ARGS['--log-level']:-$(config_or_empty | yq --raw-output '."log-level" // "info"')}"
 
 # Subcommands
-source ./commands/list.sh
-source ./commands/sync.sh
+# TODO: add cleanup command
+source commands/list.sh
+source commands/sync.sh
 
 if [ "${ARGS[help]}" = true ]; then
-  $(basename "${0}") --help
+  $(basename "${0}") help
 elif [ "${ARGS[list]}" = true ]; then
   list "ARGS"
 elif [ "${ARGS[sync]}" = true ]; then

@@ -20,6 +20,7 @@ pkgs.resholve.mkDerivation rec {
     default = {
       scripts = [
         "bin/*.sh"
+        "bin/commands/*.sh"
       ];
       interpreter = "${pkgs.bash}/bin/bash";
       inputs = with pkgs; [
