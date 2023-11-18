@@ -53,11 +53,16 @@ download() {
       filename="${formatted_date}-${safe_title}-${unique_id}.${ext}"
 
       if grep -q "$unique_id" "$log_file"; then
-        [[ "${g_args['--log-level']}" == "info" ]] && echo "Already downloaded: $filename"
+        [[ "${g_args['--log-level']}" == "info" ]] &&
+          echo "Already downloaded: $filename"
+
         continue
       fi
 
-      [[ "${g_args['--log-level']}" != "error" ]] && echo "Downloading episode: $url"
+      [[ "${g_args['--log-level']}" != "error" ]] &&
+        echo "Downloading episode: $url"
+
+      # TODO: Switch to metadata files. this can be used for backlog retrecial at a later date
       wget -O "${save_dir}/${filename}" "$url" &&
         echo "$unique_id" >>"$log_file"
     done
