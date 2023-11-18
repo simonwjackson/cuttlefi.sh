@@ -23,15 +23,16 @@ sync() {
 }
 
 download() {
-  local -n args=$1
+  local -n g_args=$1
   local podcast_name=$2
   local rss_feed_url=$3
-  local save_dir="${args['--root-dir']}/${podcast_name}"
+  local save_dir="${g_args['--root-dir']}/${podcast_name}"
 
   mkdir -p "$save_dir"
 
-  local log_file="${args['--logs-dir']}/${podcast_name}.log"
+  local log_file="${g_args['--logs-dir']}/${podcast_name}.log"
 
+  # TODO: limit downloaded items from yaml
   wget -qO- "$rss_feed_url" |
     xmlstarlet sel -t -m "//item" -v "guid" \
       -o "|" -v "pubDate" \
@@ -49,11 +50,11 @@ download() {
       filename="${formatted_date}-${safe_title}-${unique_id}.${ext}"
 
       if grep -q "$unique_id" "$log_file"; then
-        [[ "${args['--log-level']}" == "info" ]] && echo "Already downloaded: $filename"
+        [[ "${g_args['--log-level']}" == "info" ]] && echo "Already downloaded: $filename"
         continue
       fi
 
-      [[ "${args['--log-level']}" != "error" ]] && echo "Downloading episode: $url"
+      [[ "${g_args['--log-level']}" != "error" ]] && echo "Downloading episode: $url"
       wget -O "${save_dir}/${filename}" "$url" &&
         echo "$unique_id" >>"$log_file"
     done
