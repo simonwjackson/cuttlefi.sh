@@ -1,7 +1,7 @@
 sync() {
   local -n args=$1
 
-  mkdir -p "${args['--config']}"
+  mkdir -p "${args['--root-dir']}"
   mkdir -p "${args['--logs-dir']}"
 
   select_details='.subscriptions // [] | to_entries | map({name: .key} + .value) | .[] | "\(.name)\n\(.url)"'

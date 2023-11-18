@@ -28,8 +28,16 @@ config_or_empty() {
 
 # Args
 ARGS['--config']="${ARGS['--config']:-${HOME}/.config/${appName}/config.yml}"
-ARGS['--root-dir']="${ARGS['--root-dir']:-$(config_or_empty | yq --raw-output '."root-dir" // "'"$(pwd)"'"')}"
-ARGS['--logs-dir']="${ARGS['--logs-dir']:-$(config_or_empty | yq --raw-output '."logs-dir" // "'"$(pwd)"'"')}"
+ARGS['--root-dir']="${ARGS['--root-dir']:-$(config_or_empty | yq --raw-output '."root-dir" // ""')}"
+if [ -z "${ARGS['--root-dir']}" ]; then
+  printf "\n"
+  echo -e "Error: Specify the root directory using '--root-dir' argument or set the 'root-dir' key in your config file.\n"
+
+  $(basename "${0}") --help
+
+  exit 1
+fi
+ARGS['--logs-dir']="${ARGS['--logs-dir']:-$(config_or_empty | yq --raw-output '."logs-dir" // "'"${ARGS['--root-dir']}"'"')}"
 ARGS['--log-level']="${ARGS['--log-level']:-$(config_or_empty | yq --raw-output '."log-level" // "info"')}"
 
 # Subcommands
