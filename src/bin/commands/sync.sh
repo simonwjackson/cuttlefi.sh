@@ -4,7 +4,7 @@ sync() {
   mkdir -p "${args['--root-dir']}"
   mkdir -p "${args['--logs-dir']}"
 
-  select_details='.subscriptions // [] | to_entries | map({name: .key} + .value) | .[] | "\(.name)\n\(.url)"'
+  select_details='.subscriptions.feeds // [] | to_entries | map({name: .key} + .value) | .[] | "\(.name)\n\(.url)"'
 
   config_or_empty |
     yq \
